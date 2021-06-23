@@ -1,24 +1,31 @@
+
+
 package GameState;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 import GameEnvironment.Music;
 import GameEnvironment.Track;
-
 
 public class MenuState extends GameState{
 
 	// image
 	private BufferedImage imageMenuBackground; 
-	private BufferedImage imageClickNote;
+	//private BufferedImage imageClickNote;
 	private BufferedImage imageBasicNote;
+	private BufferedImage imagePointer; 
+	private BufferedImage imagePointer2; 
 	private BufferedImage imageGrayStar;
 	private BufferedImage imageYellowStar;
 	private BufferedImage imageMenu;
@@ -28,18 +35,40 @@ public class MenuState extends GameState{
 	private ArrayList<Track> tracks;
 	
 	// track value
-	public static final int AILEE_MUSIC = 0;
-	public static final int Tropicana_MUSIC = 1;
-	public static final int TWICE_MUSIC  = 2;
+	public static final int IU_MUSIC = 0;
+	public static final int BraveGirls_MUSIC = 1;
+	public static final int BTS_MUSIC  = 2;
 	
 	// selected music
 	private Music selectedMusic;
 	
-	// 개발중
-	private boolean developing = false;
-	private int alpha = 0;
+	// 잠김
+	private boolean locked = false;
+	private int alpha = 100;
 	private int delayAlpha = 0;
+	private boolean lwOpened = false;
+	private boolean yesOrno = false;
+	private boolean noEntered = false;
+	private boolean notEnough = false;
+	private int i = 0;
 	
+	public boolean checkLocked(String title) {
+		String sc = null;
+		for(int i = 0; i < 3 ; i ++) {
+			try {
+				
+				File file = new File(title+"_Locked.txt");
+				Scanner scan = new Scanner(file);
+				while(scan.hasNextLine()) {
+					sc = scan.nextLine();
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(sc.equals("true")) return true;
+		else return false;
+	}
 	
 	public MenuState(GameStateManager gsm) {
 		
@@ -48,23 +77,23 @@ public class MenuState extends GameState{
 		
 		tracks = new ArrayList<Track>();
 
-		tracks.add(new Track("Momoland", "Tropicana", 1));
-		tracks.add(new Track("Twice", "Likey", 2));
-		tracks.add(new Track("Simple plan", "Take my hand", 4));
-		tracks.add(new Track("Ailee", "Evening Sky", 2));
+		tracks.add(new Track("IU", "Blueming", 1, checkLocked("Blueming"), 0));
+		tracks.add(new Track("BraveGirls", "We Ride", 2, checkLocked("We Ride"), 2000));
+		tracks.add(new Track("BTS", "Dynamite", 4, checkLocked("Dynamite"), 5000));
 		
 		try {
 			imageMenuBackground = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/image/menuBackground.jpg")
+							"/image/menuBackground.png")
 					);
-			imageClickNote = ImageIO.read(
+			/*ImageIcon ii = new ImageIcon(
 					getClass().getResourceAsStream(
-							"/image/clickNote.png")
-					);
-			imageBasicNote = ImageIO.read(
+					"/image/note0.gif")
+					);*/
+
+			imagePointer = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/image/basicNote.png")
+							"/image/pointer.png")
 					);
 			imageGrayStar = ImageIO.read( 
 					getClass().getResourceAsStream(
@@ -76,7 +105,7 @@ public class MenuState extends GameState{
 					);
 			imageMenu = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/image/menubar.png")
+							"/image/bar.png")
 					);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -96,38 +125,78 @@ public class MenuState extends GameState{
 	
 	@Override
 	public void update() {
-		if (developing) {
+		locked = tracks.get(currentChoice).getLocked();
+		if(locked) {
+			
+		}
+		else {
+			lwOpened = false;
+		}
+		/*if (locked) {
 			if (alpha >= 145) {
-				developing = false;
+				locked = false;
 				alpha = 0;
 				delayAlpha = 0;
 			}
 		}
 
-		if(developing) {
+		if(locked) {
 			delayAlpha += 5;
 			if (delayAlpha >= 150)
 				alpha += 5;
-		}
+		}*/
 			
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		
+		int x=80, y= 420, ix= 400, iy= 100;
+
 		// background
 		g.drawImage(imageMenuBackground, 0, 0, null);
+		g.setColor(Color.black);
+		g.setFont(new Font(
+				"Elephant",
+				Font.BOLD, 
+				50
+				));
+		g.drawString( String.valueOf(gsm.getToTalCoin()), 245, 106);
 		
 		// Indication to select music
 		for (int i = 0; i < tracks.size(); i++) {
-			double dif = 200 * Math.sin(i * 124 * Math.PI / 180);
+			//double dif = 150 * Math.sin(i * 124 * Math.PI / 180);
 			
+			try {
+				imageBasicNote = ImageIO.read(
+						getClass().getResourceAsStream(
+								"/image/basicNote"+i+".png")
+						);
+				imagePointer2 = ImageIO.read(
+						getClass().getResourceAsStream(
+								"/image/menu"+i+".png")
+						);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 			// selected music
 			if(i == currentChoice) {
+
 				g.drawImage(
-						imageClickNote, 
-						40+ i * 300, 
-						220 - (int) dif,
+						imagePointer2, 
+						x-40 + i * ix + 50, 
+						y -70- (i%2) * iy - 50,
+						null
+						);
+				g.drawImage(
+						imageBasicNote, 
+						x+50+ i * ix, 
+						y-160 - (i%2) * iy,
+						null
+						);
+				g.drawImage(
+						imagePointer, 
+						x+50 + i * ix + 50, 
+						y-160 - (i%2) * iy - 50,
 						null
 						);
 				
@@ -138,20 +207,20 @@ public class MenuState extends GameState{
 						25));
 				g.drawString(
 						tracks.get(i).getSingerName(),
-						200+ i * 300,
-						380 - (int) dif
+						x+ i * ix,
+						y - (i%2) * iy
 						);
 				g.drawString(
 						tracks.get(i).getTitleName(),
-						200+ i * 300,
-						420 - (int) dif
+						x+ i * ix,
+						y+40 - (i%2) * iy
 						);
 
 				g.drawLine(
-						200+ i * 300,
-						393 - (int) dif,
-						350+ i * 300, 
-						393 - (int) dif
+						x+ i * ix,
+						y+ 13 - (i%2) * iy,
+						300+ i * ix, 
+						y+ 13 - (i%2) * iy
 						);
 				
 				// 난이도 표시
@@ -159,15 +228,15 @@ public class MenuState extends GameState{
 				for (j = 0; j < tracks.get(i).getDifficulty(); j++) {
 					g.drawImage(
 							imageYellowStar, 
-							200+ i * 300 + j * 20,
-							440 - (int) dif,
+							x+ i * ix + j * 20,
+							y+ 60 - (i%2) * iy,
 							null);
 				}
 				for (int k = 0; k < 5 - tracks.get(i).getDifficulty(); k++) {
 				g.drawImage(
 						imageGrayStar, 
-						200+ i * 300 + j * 20 + k * 20,  
-						440 - (int) dif,
+						x+ i * ix + j * 20 + k * 20,  
+						y+ 60 - (i%2) * iy,
 						null);
 				}
 			}
@@ -176,8 +245,8 @@ public class MenuState extends GameState{
 			else {
 				g.drawImage(
 						imageBasicNote, 
-						40+ i * 300,
-						220 - (int) dif,
+						x+ 50+ i * ix,
+						y- 160 - (i%2) * iy,
 						null
 						);
 				
@@ -188,42 +257,43 @@ public class MenuState extends GameState{
 						25));
 				g.drawString(
 						tracks.get(i).getSingerName(),
-						200+ i * 300,
-						380 - (int) dif
+						x+ i * ix,
+						y - (i%2) * iy
 						);
 				g.drawString(
 						tracks.get(i).getTitleName(),
-						200+ i * 300,
-						420 - (int) dif
+						x+ i * ix,
+						y+ 40 - (i%2) * iy
 						);
 
 				g.drawLine(
-						200+ i * 300 ,
-						393 - (int) dif,
-						350+ i * 300, 
-						393 - (int) dif
+						x+ i * ix ,
+						y+ 13 - (i%2) * iy,
+						300+ i * ix, 
+						y+ 13 - (i%2) * iy
 						);
 			
 			} 
 		}
 		
 		// 위 아래 라인
-		g.drawImage(imageMenu, 0, -10,null);
-		g.drawImage(imageMenu, 0, 670,null);
+		//g.drawImage(imageMenu, 0, -10,null);
+		g.drawImage(imageMenu, 0, 650, null);
 		
 		
-		// 개발 중 문구
-		if(developing) {
+		// lock 문구
+		if(locked && (!noEntered)) {
+			lwOpened = true;
 			g.setColor(new Color(
 					0, 0, 0, 
-					150 - alpha
+					150
 					));
-			g.fillRect(0, 330, 1280, 70);
+			g.fillRect(0, 300, 1280, 200);
 			g.setColor(new Color(
 					200,
 					255,
 					200, 
-					255 - alpha
+					255
 					));
 			g.setFont(new Font(
 					"Elephant", 
@@ -231,18 +301,76 @@ public class MenuState extends GameState{
 					25
 					));
 			g.drawString(
-					"Developing games.. ",
+					"Locked game",
 					520, 
 					370
+					);
+			g.drawString(
+					"Buy? ( "+tracks.get(currentChoice).getPrice()+"coins )",
+					520, 
+					410
+					);
+			if(yesOrno) {
+				g.drawString(
+						"YES",
+						550, 
+						450
+						);
+				g.setColor(new Color(
+						200-alpha,
+						255-alpha,
+						200-alpha, 
+						255 - alpha
+						));
+				g.drawString(
+						"NO",
+						650, 
+						450
+						);
+			}
+			else {
+				g.setColor(new Color(
+						200-alpha,
+						255-alpha,
+						200-alpha, 
+						255 - alpha
+						));
+				g.drawString(
+						"YES",
+						550, 
+						450
+						);
+				g.setColor(new Color(
+						200,
+						255,
+						200, 
+						255
+						));
+				g.drawString(
+						"NO",
+						650, 
+						450
+						);
+			}
+			
+		}
+		
+		if(notEnough) {
+			g.setColor(new Color(
+					200,
+					200,
+					200, 
+					255
+					));
+			g.drawString(
+					"Don't have enough coin.",
+					480, 
+					480
 					);
 		}
 		
 		
-		
-		
-		
 	}
-
 	public void playMusic(String music) { 
 		if(selectedMusic != null)
 			selectedMusic.close();
@@ -252,17 +380,15 @@ public class MenuState extends GameState{
 	
 	public void select() {
 		if (currentChoice == 0) {
-			gsm.setState(GameStateManager.MOMOLAND_STATE);
+			gsm.setState(GameStateManager.BLUEMING_STATE);
 		}
 		if (currentChoice == 1) {
-			developing = true;
+			gsm.setState(GameStateManager.WERIDE_STATE);
 		}
 		if (currentChoice == 2) {
-			developing = true;
+			gsm.setState(GameStateManager.DYNAMITE_STATE);
 		}
-		if (currentChoice == 3) {
-			developing = true;
-		}
+		
 	}
 	
 	@Override
@@ -273,36 +399,82 @@ public class MenuState extends GameState{
 		}
 		
 		if(k == KeyEvent.VK_ENTER) {
-			if (selectedMusic != null)
-				selectedMusic.close();
-			select();
+			if(lwOpened) {
+				if(yesOrno) {
+					if(gsm.c.coinLoading() >= tracks.get(currentChoice).getPrice()) { 
+						tracks.get(currentChoice).setLocked(false); 
+						gsm.buyByCoin(tracks.get(currentChoice).getPrice());
+					}
+					else {
+						if(i == 1) {
+							System.out.println("hihi");
+							i = 0;
+							notEnough = false;
+						}
+						else { notEnough = true; i++;}
+						Graphics2D g3 = null;
+						lwOpened = false;
+						gsm.draw(g3);
+					}
+				}
+				else {
+					Graphics2D g2 = null;
+					lwOpened = false;
+					notEnough = false;
+					noEntered =  true;
+					gsm.draw(g2);
+				}
+			}
+			else {
+				if (selectedMusic != null)
+					selectedMusic.close();
+				select();
+			}
 		}
 		
 		if(k == KeyEvent.VK_LEFT) {
-			currentChoice--;
-			if(currentChoice == -1)
-				currentChoice = tracks.size()- 1 ;
-			
-			if (selectedMusic != null)
-				selectedMusic.close();
-			
-			playMusic(tracks.get(currentChoice). 
-					getTitleName()+"_hightlight.mp3"
-					);
+			noEntered = false;
+			if(lwOpened) {
+				yesOrno = !yesOrno;
+			}
+			else {
+				currentChoice--;
+				if(currentChoice == -1)
+					currentChoice = tracks.size()- 1 ;
+				
+				if (selectedMusic != null)
+					selectedMusic.close();
+				
+				playMusic(tracks.get(currentChoice). 
+						getTitleName()+"_hightlight.mp3"
+						);
+			}
 		}
 		
 		if(k == KeyEvent.VK_RIGHT) {
-			currentChoice++;
-			if(currentChoice == tracks.size())  
-				currentChoice = 0;
+			noEntered = false;
+			if(lwOpened) {
+				yesOrno = !yesOrno;
+			}
+			else {
+				currentChoice++;
+				if(currentChoice == tracks.size())  
+					currentChoice = 0;
+				
+				if (selectedMusic != null) {
+					selectedMusic.close();
+					
+					playMusic(tracks.get(currentChoice).
+							getTitleName()+"_hightlight.mp3"
+							);
+				}
+			}
 			
-			if (selectedMusic != null)
-				selectedMusic.close();
-			
-			playMusic(tracks.get(currentChoice).
-					getTitleName()+"_hightlight.mp3"
-					);
 		}
+		
+		if(k == KeyEvent.VK_ESCAPE) 
+			System.exit(0);
+		
 	}
 
 	@Override

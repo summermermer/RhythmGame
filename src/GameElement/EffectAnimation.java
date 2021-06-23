@@ -4,17 +4,20 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
 
 
 public class EffectAnimation {
-
+	
 	// effect 여부
 	private boolean hitEffect;
 	private boolean comboEffect;
 	private boolean comboColor;
 	
 	// effect 시간별 컨트롤
-	private int hitAlpha; 
+	private int hitAlpha;
 	private int comboAlpha;
 	private int comboColorAlpha;
 
@@ -24,7 +27,7 @@ public class EffectAnimation {
 	
 	// hit effect index
 	private int index;
-	
+	private BufferedImage peongImage;
 	
 	public EffectAnimation() {
 		
@@ -40,16 +43,27 @@ public class EffectAnimation {
 		
 		// hit 위치 컨트롤 초기화
 		index = 0;
+		
+		
+		try {
+			peongImage = ImageIO.read(
+					getClass().getResourceAsStream(
+							"/image/peong.png"
+							));
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void setPosition(String noteType) {
-		if(noteType.equals("S")) index = 0;
-		else if(noteType.equals("D")) index = 1;
-		else if(noteType.equals("f")) index = 2;
-		else if(noteType.equals("Space")) index = 3;
-		else if(noteType.equals("J")) index = 5;
-		else if(noteType.equals("K")) index = 6;
-		else if(noteType.equals("L")) index = 7;
+	public void setPosition(int noteType) {
+		if(noteType == 1) index = 0;
+		else if(noteType == 2) index = 1;
+		else if(noteType == 3) index = 2;
+		else if(noteType == 4) index = 3;
+		else if(noteType == 5) index = 4;
+		//else if(noteType.equals("K")) index = 6;
+		//else if(noteType.equals("L")) index = 7;
 	}
 	
 	public void update() {
@@ -91,29 +105,12 @@ public class EffectAnimation {
 					hitAlpha, 
 					hitAlpha, 
 					hitAlpha));
-			if(index == 3) {
-				g.fillRect(
+				g.drawImage(
+						peongImage, 
 						228 + index * 104, 
-						580,
-						104,
-						40
+						500,
+						null
 						);
-				g.fillRect(
-						228 + (index + 1) * 104, 
-						580,
-						100,
-						40
-						);
-			}
-			if(index != 3) {
-				g.fillRect(
-						228 + index * 104, 
-						580,
-						100,
-						40
-						);
-			}
-			
 		}
 		
 		g.setRenderingHint(
@@ -121,26 +118,26 @@ public class EffectAnimation {
 				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
 		// 콤보 모션 효과
-		if (comboEffect) {
-			g.setColor(new Color(
-					200, 
-					255,
-					200,
-					255  - comboColorAlpha
-					));
-			g.setFont(new Font("Elephant", Font.BOLD, 30));
-			g.drawString(
-					comboMotion, 
-					520, 
-					400 + (int)comboAlpha
-					);	
-			g.drawString(
-					String.valueOf(comboCount), 
-					700,
-					400 + (int)comboAlpha
-					); 
-		}
-		
+		 if (comboEffect) {
+	         g.setColor(new Color(
+	               200, 
+	               255,
+	               200,
+	               255  - comboColorAlpha
+	               ));
+	         g.setFont(new Font("Elephant", Font.BOLD, 30));
+	         g.drawString(
+	               comboMotion, 
+	               520, 
+	               400 + (int)comboAlpha
+	               );   
+	         /*g.drawString(
+	               "X "+String.valueOf(comboCount), 
+	               700,
+	               400 + (int)comboAlpha
+	               ); */
+	      }
+
 	}
 	
 	public void setCombo(String comboMotion, int combo) {
@@ -160,5 +157,7 @@ public class EffectAnimation {
 	}
 	
 }
+
+
 
 

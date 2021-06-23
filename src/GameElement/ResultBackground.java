@@ -14,10 +14,12 @@ import GameEnvironment.Music;
 
 public class ResultBackground {
 
-	// 제목, 점수, 랭크
+	// 제목, 점수, 랭크, 얻은 코인
 	private String musicTitle;
 	private int score;
+	private int grade;
 	private String rank;
+	private int coin;
 	
 	// 단계별 컨트롤 변수
 	private boolean step1On;
@@ -50,10 +52,10 @@ public class ResultBackground {
 	
 	// 수정요망
 	public void calRank() {
-		if(score <= 6000) rank = "C"; 
-		else if(score <= 10000) rank = "B"; 
-		else if(score <= 18000) rank = "A"; 
-		else if(score <= 25000) rank = "S"; 
+		if(grade == 3) rank = "C"; 
+		else if(grade == 2) rank = "B"; 
+		else if(grade == 1) rank = "A"; 
+		else if(grade == 0) rank = "S"; 
 	}
 	
 	public void writeScore() {
@@ -90,7 +92,6 @@ public class ResultBackground {
 			writer.flush();
 			fw.close();
 			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -117,7 +118,7 @@ public class ResultBackground {
 				400, 
 				240,
 				480, 
-				180
+				300
 				);
 		
 		g.setRenderingHint(
@@ -137,7 +138,7 @@ public class ResultBackground {
 			g.drawString(musicTitle, 440, 300);
 		}
 		
-		// 2단계 - 점수
+		// 2단계 - 점수와 얻은 코인
 		if(bgm.getTime() >= 4000 || step2On == true) {
 			step2On = true;
 			g.setColor(new Color(200, 255, 200));
@@ -150,6 +151,11 @@ public class ResultBackground {
 					"Score : "+String.valueOf(score), 
 					440, 
 					370
+					);
+			g.drawString(
+					"Obtained coin : "+String.valueOf(coin), 
+					440, 
+					440
 					);
 		}
 		
@@ -179,7 +185,7 @@ public class ResultBackground {
 			g.drawString(
 					"next game ENTER", 
 					500, 
-					450
+					500
 					);
 		}
 	
@@ -197,5 +203,7 @@ public class ResultBackground {
 	
 	public boolean getNextGame() { return nextgame; }
 	public void takeMusicTitle(String title){ musicTitle = title; }
-	public void takeScore(int score) { this.score = score; }
+	public void takeScore(int score,int grade) { this.score = score; this.grade=grade; }
+	public void takeCoin(int coin) { this.coin = coin; }
+	
 }

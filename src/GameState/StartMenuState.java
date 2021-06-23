@@ -28,8 +28,8 @@ public class StartMenuState extends GameState{
 		try {
 			image = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/image/introBackground.jpg")
-					);
+							"/image/introBackground.png")
+					); // ÀÌ¹ÌÁö ¹Ù²ãÁÖ±â!
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -47,12 +47,12 @@ public class StartMenuState extends GameState{
 		g.drawImage(image, 0, 0, null);
 		
 		// title
-		g.setColor(Color.ORANGE);
+		/*g.setColor(Color.ORANGE); // »ö¸ÂÃç¼­ ¹Ù²ãÁÖ±â !
 		g.setFont(new Font(
 				"a°¡À»¿îµ¿È¸B", 
 				Font.PLAIN, 
 				130));
-		g.drawString("Rhythm Game", 200, 180);
+		g.drawString("Rhythm Game", 200, 180);*/
 		
 		// flash info
 		double alpha = 255 * Math.sin(angle * Math.PI / 180);	
@@ -60,19 +60,19 @@ public class StartMenuState extends GameState{
 		g.setFont(new Font(
 				"a¿¾³¯¸ñ¿åÅÁB", 
 				Font.PLAIN, 
-				50));
-		g.setColor(new Color(255, 255, 255, (int)alpha));
+				40));
+		g.setColor(new Color(177, 125, 230, (int)alpha));
 		g.drawString(
 				"Press space bar to continue",
-				255, 580);
+				400, 460); // ¹®±¸ ¹Ù²Ù±â
 		
 		// version info
-		g.setColor(Color.white);
+		/*g.setColor(new Color(255, 255, 255, (int)alpha));
 		g.setFont(new Font(
 				"a¿¾³¯¸ñ¿åÅÁB", 
 				Font.PLAIN, 
 				35));
-		g.drawString("1.0.1", 610,670);
+		g.drawString("1.0.1", 610,670);*/
 	
 	}
 
@@ -81,6 +81,11 @@ public class StartMenuState extends GameState{
 	public void keyPressed(int k) {
 		if(k == KeyEvent.VK_SPACE) 
 			gsm.setState(GameStateManager.MENUSTATE);
+		
+		if(k == KeyEvent.VK_ESCAPE) 
+			System.exit(0);
+		
+		
 	}
 	
 	@Override

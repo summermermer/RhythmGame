@@ -1,6 +1,10 @@
+
 package GameState;
 
 import java.awt.Graphics2D;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class GameStateManager {
 
@@ -9,10 +13,14 @@ public class GameStateManager {
 	
 	public static final int STARTMENUSTATE = 0;
 	public static final int MENUSTATE = 1;
-	public static final int SIMPLEPLAN_STATE = 2;
-	public static final int MOMOLAND_STATE = 3;
-	public static final int TWICE_STATE = 4;
-	public static final int AILEE_STATE = 5;
+	public static final int BLUEMING_STATE = 2;
+	public static final int WERIDE_STATE = 3;
+	public static final int DYNAMITE_STATE = 4;
+	//public static final int AILEE_STATE = 5;
+
+	//ÃÑ ÄÚÀÎ ¼ö
+	private int totalCoin = 0;
+	public CoinBank c = new CoinBank();
 	
 	public GameStateManager() {
 		
@@ -30,24 +38,17 @@ public class GameStateManager {
 			if (gameStates[state] == null)
 				gameStates[state] = new MenuState(this);
 		}
-		if(state == SIMPLEPLAN_STATE)
-			gameStates[state] = new GameSimplePlan(this);
-		if(state == TWICE_STATE)
-			gameStates[state] = new GameTwice(this);
-		if (state == MOMOLAND_STATE)
-			gameStates[state] = new GameMoMo(this);
+		if(state == BLUEMING_STATE)
+			gameStates[state] = new GameBlueming(this);
+		if(state == WERIDE_STATE)
+			gameStates[state] = new GameWeRide(this);
+		if (state == DYNAMITE_STATE)
+			gameStates[state] = new GameDynamite(this);
 	}
 	
-	public void unloadState(int state) {
-		gameStates[state] = null;
-	}
-	
+
 	
 	public void setState(int state) {
-		
-		if (currentState != MENUSTATE) {
-			unloadState(currentState);
-		}
 		
 		currentState = state;
 		loadState(state);
@@ -78,11 +79,25 @@ public class GameStateManager {
 	public void keyPressed(int k) {
 		try {
 			gameStates[currentState].keyPressed(k);
+			
 		} catch (Exception e) {}
 	}
 	public void keyReleased(int k) {
 		try {
 			gameStates[currentState].keyReleased(k);
 		} catch (Exception e) {}
+	}
+	public void buyByCoin(int p) {
+		totalCoin-=p;
+		c.coinLogging(totalCoin);
+	}
+	
+	public int getToTalCoin() {
+		totalCoin = c.coinLoading();
+		return totalCoin;
+	}
+	public void addTotalCoin(int coin) {
+		totalCoin += coin;
+		c.coinLogging(totalCoin);
 	}
 }

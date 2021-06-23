@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
+
 public class InterfaceBackground {
 	
 	// image
@@ -16,16 +17,31 @@ public class InterfaceBackground {
 	private Image gameInfoImage;
 	private Image judgmentLineImage;
 	private Image noteRouteLineImage;
-	private Image noteRouteSImage;
-	private Image noteRouteDImage;
-	private Image noteRouteFImage;
-	private Image noteRouteSpaceImage;
-	private Image noteRouteJImage;
-	private Image noteRouteKImage;
-	private Image noteRouteLImage;
+	private Image noteRoute1Image;
+	private Image noteRoute2Image;
+	private Image noteRoute3Image;
+	private Image noteRoute4Image;
+	private Image noteRoute5Image;
 	
-	public InterfaceBackground(String background) {
-		
+	private Image ch;
+	
+	//ch의 위치
+	private int position = 3;
+	//noteLine 의 y 좌표
+	private int y = 0;
+	private String chr;
+	public InterfaceBackground(String background, int state) {
+		switch(state) {
+			case 2: 
+				chr = "chick";
+				break;
+			case 3:
+				chr = "frog";
+				break;
+			case 4:
+				chr = "kitty";
+				break;
+		}
 		try {
 			imagBackground = ImageIO.read(
 					getClass().getResourceAsStream(
@@ -33,44 +49,43 @@ public class InterfaceBackground {
 							));
 			gameInfoImage = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/image/gameInfo.png"
+							"/image/bar.png"
 							));
 			judgmentLineImage = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/image/judgementLine.png"
+							"/image/"+chr+"_bar.png"
 							));
 			noteRouteLineImage = ImageIO.read(
 					getClass().getResourceAsStream(
 							"/image/noteRouteLine.png"
 							));
-			noteRouteSImage = ImageIO.read(
+			noteRoute1Image = ImageIO.read(
 					getClass().getResourceAsStream(
 							"/image/noteRoute.png"
 							));
-			noteRouteDImage = ImageIO.read(
+			noteRoute2Image = ImageIO.read(
 					getClass().getResourceAsStream(
 							"/image/noteRoute.png"
 							));
-			noteRouteFImage = ImageIO.read(
+			noteRoute3Image = ImageIO.read(
 					getClass().getResourceAsStream(
 							"/image/noteRoute.png"
 							));
-			noteRouteSpaceImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoute.png"
-							));
-			noteRouteJImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoute.png"
-							));
-			noteRouteKImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoute.png"
-							));
-			noteRouteLImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoute.png"
-							));
+			
+	         noteRoute4Image = ImageIO.read(
+	                 getClass().getResourceAsStream(
+	                       "/image/noteRoute.png"
+	                       ));
+	         noteRoute5Image = ImageIO.read(
+	                 getClass().getResourceAsStream(
+	                       "/image/noteRoute.png"
+	                       ));
+
+   	       ch = ImageIO.read(
+ 					getClass().getResourceAsStream(
+ 							"/image/"+chr+".png"
+ 							));
+	       
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -83,26 +98,25 @@ public class InterfaceBackground {
 		g.drawImage(imagBackground, 0, 0, null);
 		
 		// 노트 루트
-		g.drawImage(noteRouteSImage, 228, 30, null);
-		g.drawImage(noteRouteDImage, 332, 30, null);
-		g.drawImage(noteRouteFImage, 436, 30, null);
-		g.drawImage(noteRouteSpaceImage, 540, 30, null);
-		g.drawImage(noteRouteSpaceImage, 640, 30, null); 
-		g.drawImage(noteRouteJImage, 744, 30, null);
-		g.drawImage(noteRouteKImage, 848, 30, null);
-		g.drawImage(noteRouteLImage, 952, 30, null);
-		g.drawImage(noteRouteLineImage, 224, 0, null);
-		g.drawImage(noteRouteLineImage, 328, 0, null);
-		g.drawImage(noteRouteLineImage, 432, 0, null);
-		g.drawImage(noteRouteLineImage, 536, 0, null);
-		g.drawImage(noteRouteLineImage, 740, 0, null);
-		g.drawImage(noteRouteLineImage, 844, 0, null);
-		g.drawImage(noteRouteLineImage, 948, 0, null);
-		g.drawImage(noteRouteLineImage, 1052, 0, null);
+		g.drawImage(noteRoute1Image, 228, y, null);
+		g.drawImage(noteRoute2Image, 332, y, null);
+		g.drawImage(noteRoute3Image, 436, y, null);
+		g.drawImage(noteRoute4Image, 540, y, null);
+		g.drawImage(noteRoute5Image, 644, y, null); 
+		g.drawImage(noteRouteLineImage, 224, y, null);
+		g.drawImage(noteRouteLineImage, 328, y, null);
+		g.drawImage(noteRouteLineImage, 432, y, null);
+		g.drawImage(noteRouteLineImage, 536, y, null);
+		g.drawImage(noteRouteLineImage, 640, y, null);
+		g.drawImage(noteRouteLineImage, 744, y, null);
+
 		
 		// 라인
-		g.drawImage(judgmentLineImage, 0, 580, null);
-		g.drawImage(gameInfoImage, 0, 660, null);
+		g.drawImage(judgmentLineImage, 0, 600, null);
+		g.drawImage(gameInfoImage, 0, 670, null);
+		
+		//캐릭터
+		g.drawImage(ch, 126 + 104 * position, 530, null);
 		
 		// 루트 단축키
 		g.setColor(Color.DARK_GRAY);
@@ -111,53 +125,126 @@ public class InterfaceBackground {
 				RenderingHints.VALUE_TEXT_ANTIALIAS_ON
 				);
 		g.setFont(new Font("Arial", Font.PLAIN, 30));
-		g.drawString("S", 270, 609);
-		g.drawString("D", 374, 609);
-		g.drawString("F", 478, 609);
-		g.drawString("Space Bar", 580, 609);
-		g.drawString("J", 784, 609);
-		g.drawString("K", 889, 609);
-		g.drawString("L", 993, 609);
+		/*g.drawString("1", 270, 609);
+		g.drawString("2", 374, 609);
+		g.drawString("3", 478, 609);
+		g.drawString("4", 580, 609);
+		g.drawString("5", 682, 609);*/
+
 		
 		
 	}
 	
-	public void pressS() {
+	public void press1() {
 		try {
-			noteRouteSImage = ImageIO.read(
+			noteRoute1Image = ImageIO.read(
 					getClass().getResourceAsStream(
 							"/image/noteRoutePressed.png"
+							));
+			position = 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void release1() {
+		try {
+			noteRoute1Image = ImageIO.read(
+					getClass().getResourceAsStream(
+							"/image/noteRoute.png"
 							));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void releaseS() {
+	public void press2() {
 		try {
-			noteRouteSImage = ImageIO.read(
+			noteRoute2Image = ImageIO.read(
+					getClass().getResourceAsStream(
+							"/image/noteRoutePressed.png"
+							));
+			position = 2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void release2() {
+		try {
+			noteRoute2Image = ImageIO.read(
 					getClass().getResourceAsStream(
 							"/image/noteRoute.png"
 							));
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void press3() {
+		try {
+			noteRoute3Image = ImageIO.read(
+					getClass().getResourceAsStream(
+							"/image/noteRoutePressed.png"
+							));
+			position = 3;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void release3() {
+		try {
+			noteRoute3Image = ImageIO.read(
+					getClass().getResourceAsStream(
+							"/image/noteRoute.png"
+							));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void pressD() {
+	public void press4() {
+	      try {
+	         noteRoute4Image = ImageIO.read(
+	               getClass().getResourceAsStream(
+	                     "/image/noteRoutePressed.png"
+	                     ));
+	         position = 4;
+	      } catch (Exception e) {
+	         e.printStackTrace();
+	      }
+	   }
+
+	public void release4() {
+	      try {
+	         noteRoute4Image = ImageIO.read(
+	               getClass().getResourceAsStream(
+	                     "/image/noteRoute.png"
+	                     ));
+	         
+	      } catch (Exception e) {
+	         e.printStackTrace();
+	      }
+	   }
+
+	public void press5() {
 		try {
-			noteRouteDImage = ImageIO.read(
+			noteRoute5Image = ImageIO.read(
 					getClass().getResourceAsStream(
 							"/image/noteRoutePressed.png"
 							));
+			position = 5;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void releaseD() {
+	public void release5() {
 		try {
-			noteRouteDImage = ImageIO.read(
+			noteRoute5Image = ImageIO.read(
 					getClass().getResourceAsStream(
 							"/image/noteRoute.png"
 							));
@@ -166,114 +253,10 @@ public class InterfaceBackground {
 		}
 	}
 
-	public void pressF() {
-		try {
-			noteRouteFImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoutePressed.png"
-							));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void releaseF() {
-		try {
-			noteRouteFImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoute.png"
-							));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void pressSpace() {
-		try {
-			noteRouteSpaceImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoutePressed.png"
-							));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void releaseSpace() {
-		try {
-			noteRouteSpaceImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoute.png"
-							));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void pressJ() {
-		try {
-			noteRouteJImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoutePressed.png"
-							));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void releaseJ() {
-		try {
-			noteRouteJImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoute.png"
-							));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void pressK() {
-		try {
-			noteRouteKImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoutePressed.png"
-							));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
-	public void releaseK() {
-		try {
-			noteRouteKImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoute.png"
-							));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
-	public void pressL() {
-		try {
-			noteRouteLImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoutePressed.png"
-							));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void releaseL() {
-		try {
-			noteRouteLImage = ImageIO.read(
-					getClass().getResourceAsStream(
-							"/image/noteRoute.png"
-							));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	
+	
+	
 	
 }
